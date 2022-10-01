@@ -1,0 +1,749 @@
+NASA Technical Memorandum 89450
+
+.
+
+3
+
+’
+
+.
+
+Computational
+Aerothermodynamics
+George S. Deiwert and Michael J. Green
+(NASA-Til-8945 G)
+CCEF 6 3 A T I C li A 1
+LEECTEEBECDYLAdICS (&&SA)
+If p
+l i l I S EC
+
+AOZ/flF
+
+401
+
+887-22943
+
+Avail:
+CSCL 2 O D
+g/34
+
+April 1987
+
+National Aeronauticsand
+Space Administration
+
+Unclas
+0076022
+
+NASA Technical Memorandum 89450
+
+Computational
+Aerothermodynamics
+George S. Deiwert and Michael J. Green, Ames Research Center, Moffett Field, California
+
+April 1987
+
+National Aeronautics and
+Space Ad ministration
+Ames Research Center
+Moffett Field,California 94035
+
+COMPUTATIONAL AEROTHERMODYNAMICS
+George S. Deiwert* and Michael J. Greent
+Computational aerothermodynamics (CAT) has in the past
+contributed to the understanding of real-gas flows encountered
+by hypervelocity reentry vehicles. With advances in computational fluid dynamics, in the modeling of high-temperature
+phenomena, and in computer capability, CAT is an enabling
+technology for the design of many future space vehicles. An
+overview of the current capabilities of CAT is provided by describing available methods and their applications. Technical
+challenges that need to be met are also discussed.
+INTRODUCTION
+The design of the next-generation aerospace transportation systems will be driven
+by considerations such as making systems fully reusable, achieving maximum
+payload-to-total-weight ratios, and providing high-altitude aerodynamic maneuverability to make possible orbital-plane change and cross-range capability. These and
+others considerations will be suitably refined to effect designs for economically feasible vehicles such as rapid-response transatmospheric vehicles (TAVs) and space
+freighter vehicles like the aeroassisted orbital transfer vehicle (AOTV).2
+In the past, heavy reliance was placed on using ground-based test facilities such as
+shock tubes, arc jets, and ballistic ranges, in conjunction with engineering design
+and analysis computer codes, to achieve closure on designs of such vehicles as the
+Apollo Command Module, the Space Shuttle Orbiter, and the Galileo probe. Many
+of these were expendable, "one-shot" vehicles that used ablative thermal protection systems (TPSs). The Space Shuttle Orbiter, a reusable nonaeromaneuvering
+vehicle, is equipped with reusable tiles but must still undergo considerable refurbishment between missions. The design of fully reusable aeromaneuvering vehicles
+will require that design tools be significantly improved over those used in the past,
+and that design tolerances be much tighter to avoid unnecessary weight penalties
+that can make the cost prohibitive.
+Ground-based test facilities can provide valuable insight for the design and understanding of aerospace vehicles. Such facilities, however, cannot simulate all of the
+conditions that will be encountered in missions planned for the future. Figure 1
+shows the flight domain for a variety of aerospace vehicles for typical missions in
+terms of flight Reynolds numbers and flight Mach numbers. Superimposed are the
+
+* Chief, Aerothermodynamics Branch, NASA Ames Research Center: Moffett
+Field, California 94035. Phone 415/694-6198.
+t Research Scientist, Aerothermodynamics Branch, NASA Ames Research Center, Moffett Field, California 94035. Phone 4151694-4226.
+1
+
+regimes that can be simulated by typical ground-based test facilities. Unlike present
+vehicles, those of the future will have t o endure extended periods of hypervelocity
+flight at high altitudes,2 but this low-density flight regime is one of the most difficult
+to simulate experimentally. Flight tests are being planned, such as the Aeroassist
+Flight Experiment (AFE),3 to provide data for this regime, but such tests are expensive and can provide only a limited amount of data. To augment these data
+and to optimize cost-effective designs, reliance must be placed on advanced computational techniques. Both ground-based and flight tests can provide valuable data
+to validate these computational methods. The computational methods can then, in
+turn, be used to extrapolate our understanding and analyses t o regimes not covered
+by existing facilities.
+Over the past 15 years, during the hiatus in hypersonic research, we have seen great
+advances in three key areas that are now being synthesized t o develop computational
+techniques that are sufficiently advanced to enable the design of the next-generation
+aerospace transportation systems: (1) computers, (2) computational fluid dynamics
+(CFD), and (3) computational aerothermodynamics (CAT). The first concerns the
+development of inexpensive raw computing power. In the early 1970's scientific
+computers were those in the IBM 360 and CDC 6600 class. The IBM 370 series and
+the CDC 7600 machines were just becoming available. Since that time the Cray 1
+and Cray 2 computers, the CDC Cyber 205, the Fujitsu VP200 and VP400, and the
+Hitachi S 810 have become available. And in the future there will be the ETA 10
+and the Cray 3 supercomputers. These later computers are faster and have larger
+memories (by orders of magnitude) and, a t the same time, cost orders of magnitude
+less per unit of computing power than did the computers of 15 years ago.
+During the same period, a new and powerful aerodynamics tool was developed:
+CFD. Numerical algorithms have been refined t o efficiently solve the Reynoldsaveraged Navier-Stokes equations for three-dimensional steady and unsteady compressible flows at transonic and supersonic speeds in an ideal gas. Associated with
+this are sophisticated discretization schemes to describe complex geometries and
+.~
+flowfields. A recent survey of the state of the art in CFD is given by K ~ t l e r To
+extend the CFD capability to the hypersonic flight regime experienced by aerospace
+vehicles it is necessary t o include high temperature or, as it is commonly called,
+real-gas effects. Typically, this involves the description of chemical reactions, thermochemical nonequilibrium, and radiative transport phenomena. At the very high
+temperatures associated with high-altitude hypervelocity flight there is a paucity
+of experimental data defining collision cross sections and transition probabilities
+necessary t o accurately describe the chemical exchange processes involved; recent
+advances in computational chemistry can be used t o fill this critical gap. A recent
+survey describing the capability of computational chemistry and the effect on the
+analysis of AOTVs is given by Cooper et al.5 The combination of CFD and the modeling of real-gas phenomena, along with modern high-speed computers, forms the
+basis of CAT, which will be briefly described in the remainder of this paper, along
+with some illustrative examples for particular methods and configurations. Excel2
+
+lent recent review articles on CAT are given by Anderson,' Graves and Hunt,' and
+Lewis.' These are highly recommended additional reading to augment the brief description given in this paper; in addition, they provide excellent lists of references
+that describe the state of the art in even more detail.
+The chief goal in CAT is to predict aerothermal flow environments. The physical phenomena involved include effects such as aerodynamic forces, convective and
+radiative heating rates, gas and surface interactions and catalytic surfaces, interactions with active cooling TPSs, and plasma layers and their effect on communications and power supply. These phenomena are critical t o the design of maneuverable and aerodynamically stable vehicles that are adequately protected from the
+very high thermal loads imposed by hypervelocity flight.
+COMPUTATIONAL AEROTHERMODYNAMICS
+CFD involves the numerical simulation of the equations of motion for an ideal gas;
+as
+these equations are the conservation of m s , momentum, and energy. In their
+most general form these equations are the compressible Navier-Stokes(NS) equations. For turbulent flows the range of length scales is too great to be practically
+resolved numerically; as a result, the equations are time-averaged over a scale small
+with respect to the mean motion time-scale yet large with respect to the fine-scale
+turbulent structure (see Ref. 9, for example). These small-scale turbulent transport processes are modeled using eddy-viscosity and eddy-conductivity approaches.
+Many flowfields for a variety of shapes and flow conditions where strong viscousinviscid interactions or flow separation are important have been well simulated by
+solving these equations in a time-like manner until a steady state is asymptotically
+achieved. When there is no flow reversal and the inviscid flow in the streamwise
+direction is supersonic, the steady-state NS equations can be simplified by neglecting the streamwise viscous terms and approximating the exact streamwise pressure
+gradient. The solutions to these simplified equations, referred to as the parabolized
+Xavier-Stokes equations( PNS), can be found by efficient streamwise-marching techniques. Further simplification can be achieved when viscous-inviscid interactions are
+weak by decoupling the viscous- and inviscid-dominated regions from one another
+and simulating the regions separately in an iterative manner. Here the unsteady,
+S
+inviscid N equations, termed the Euler(E) equations, are solved in the inviscid
+region away from body surfaces. The asymptotic steady-state solution provides the
+edge conditions needed for solution of the viscous-dominated boundary-layer(BL)
+equations near the body surface. A fourth simplification which can be used for
+strong viscous-inviscid interactions is the viscous shock-layer(VSL) approximation.
+The VSL equations are obtained from the steady-state NS equations by retaining
+terms up to second order in the inverse square root of the Reynolds number. In
+addition, approximations are invoked for the normal pressure gradient and the bow
+shock location. The reader is referred t o Ref. 9 for a comprehensive description of
+the four equation sets corresponding to an ideal gas.
+The four equation sets (Reynolds-averaged NS, PNS, E+BL, and VSL) when coupled with real-gas effects(to be discussed) form the basis of the solution methods
+3
+
+used in computational aerothermodynamics to simulate aerothermal environments
+for a variety of vehicles and flight conditions. In this paper, the concern is solely
+with continuum flow regimes; for methods used in computational aerothermodynamics for noncontinuum regimes (i.e., transitional and free-molecular regimes), it
+is suggested that the reader see, for example, Ref. 10.
+Real-gas effects include thermochemical nonequilibrium, where finite-rate processes
+for chemical- and energy-exchange phenomena occur, and radiative transport. To
+account for chemical reactions, conservation equations for each chemical species
+must be added to the flowfield equation set. There are five flowfield equations:
+a continuity equation, three momentum equations, and an energy equation. For
+dissociating and ionizing air there are typically nine species ( N 2 , 02,N, 0 , NO,
+O’, N + , NOS, e-). The inclusion of conservation equations for each of these
+species nearly triples the number of equations to be solved. When there are combustion processes or gas-surface interactions or ablation products, the number of
+species increases dramatically. To account for thermal nonequilibrium there are
+additional energy equations t o describe the energy exchange between the various
+energy modes (translational, rotational, vibrational, electronic, etc.). In Ref. 1 1 ,
+conservation equations are presented for these nonequilibrium phenomena.They are
+derived from kinetic principles and a four-component ionized gas consisting of neutral molecules, neutral atoms, singly ionized ions, and electrons. When thermal
+radiation is important, the radiative flux must be included in the energy equation.
+Computation of the radiation, based on realistic spectral models, is one of the most
+costly parts of the solution process. To further complicate the analysis, the range
+of time scales involved in thermochemical processes is many orders of magnitude
+wider than the mean-flow time scale. This is the single most complicating factor
+in CAT. A wide variety of simplifications are used to alleviate problems associated
+with widely disparate time scales; they are discussed briefly next.
+Many flows can be adequately approximated by assuming an equilibrium real gas.
+Here, all the reaction rates are assumed to be fast enough so that the gas is everywhere in local equilibrium and the thermochemical state of the gas can be defined
+solely by the local temperature and pressure. Reactions are allowed to occur but are
+completely uncoupled from the flowfield equations. This is a good approximation
+for lower altitudes and can be used for a major portion of the analysis of such vehicles as TAVs. At the other extreme, reactions are sometimes so slow that the gas
+can be considered frozen in a particular chemical state. This phenomenon typically
+occurs in regions of rapid expansion such as in jet or base flows, but can sometimes
+be used behind compressive shocks as well.
+When finite-rate chemical reactions are important, they can often be considered to
+be in thermal equilibrium; that is, it can be assumed that the energy modes of the
+species equilibrate very rapidly relative to the chemical rate processes. Even with
+this simplification, the time scales vary over an extremely wide range, resulting
+in a “stiff behavior of the complete equation set and adding to the difficulty in
+solving the flowfield and species equations in a fully coupled manner. In these cases
+4
+
+the species equations are often effectively uncoupled from the flowfield equations
+and solved separately in a “loosely” coupled manner, often by a different (typically
+implicit) numerical technique.
+STATUS O F CAT
+This section presents an overview of the current capabilities of CAT. It describes,
+in a general manner, the available methods and their applications to real-gas flows.
+The particular methods and the applications to be described are representative of
+the discipline and are those most familiar to the authors. A much more comprehensive list of available computer codes and references to their applications is provided
+in Ref. 8. Most of the computer codes developed in CAT are based on the equation sets mentioned above. The codes will be described in a n order reversed from
+that previously given for the equation sets. The new ordering somewhat follows the
+chronological development of the four classes of codes.
+Viscous Shock-Layer Codes
+VSL codes have been the major tools for providing aerothermal flowfield environments for the windward forebody shock-layer region of reentry vehicles with simple
+configurations. For instance, the axisymmetric HYVIS,I2 RASLE,13 and C0LTSl4
+codes were used to define the predominately radiative heating environment of the
+Galileo probe during its future entry into Jupiter’s atmosphere. The ablative TPS
+for the probe was sized based on computer predictions. Lewis and his students have
+developed several three-dimensional codes that include various real-gas effects(see
+the reference list in Ref. 8).
+A s a group, the VSL codes are, for multidimensional flow, the most robust as
+far as simulating high-temperature phenomena is concerned. These phenomena
+include equilibrium or nonequilibrium chemistry, binary or multicomponent diffusion, surface catalyticity, steady-state ablation, shock and wall slip, detailed spectral
+radiation transport (employing a plane-slab approximation), and turbulence(eddyviscosity models). As an example of a recent application, Green et al.15 obtained
+RASLE solutions for the forebody of a Titan atmosphere entry probe which is
+planned to make scientific measurements in the organic haze layer of Saturn’s
+largest moon. The flow was assumed t o be in thermochemical equilibrium and
+corresponded to an entry velocity of 12 km/sec. Figure 2 shows the convective
+and radiative stagnation-point heating pulses. The chemical species distribution
+predicted along the stagnation streamline at peak heating are presented in Fig. 3.
+The I’SL technique does have limitations. Since the VSL equations are hyperbolicparabolic in both the streamwise and crossflow directions, VSL codes cannot be
+applied to flows with significant separation in those directions, or to flows with
+large subsonic regions where upstream influence is important. Thus, they are most
+attractive for simulating windward forebody flows for configurations that are neither
+too slender nor too blunt.
+
+Euler + Boundary-Layer Codes
+T w o groups of researchers have successfully developed EI-BL solution methods. Ra-
+
+kich and his colleagues'6~" have applied their method to the Space Shuttle Orbiter
+flowfield. The analysis considers either equilibrium or nonequilibrium air chemistry,
+and it has been used t o study the catalytic efficiency of the Orbiter's TPS. Hamilton
+and his colleagues'* have also applied their method, which models equilibrium air
+chemistry, to the Orbiter flowfield.
+
+As an illustration of the E+BL technique, Fig. 4 (taken from Ref. 16) shows the
+computed bow-shock shape (in the pitch plane of symmetry) over the Orbiter. The
+flight conditions correspond t o a velocity of 6.7 km/s, an altitude of 65.5 km, and
+an angle of attack of 30". The effect of reacting gas chemistry is clearly evident.
+
+The E - B L method is useful for flows in which the inviscid-viscous interaction is
+not significant and in which the BL assumptions are satisfied. One of the most
+stringent assumptions is that the normal pressure gradient be negligible. It cannot
+be applied to realistjcally simulate wake flows.
+Parabolized Navier-Stokes Codes
+To date, PES codes have been used mainly for slender-body, ideal-gas applications.
+For blunted slender-body applications, an additional computation with a VSL or
+KS code is necessary to provide a starting solution for the PNS solver. The starting
+solution requires that the inviscid region of the flow be purely supersonic. Threedimensjonal PES codes for flows in chemical equilibrium have been developed by
+Gnoff~,*~
+Prabhu and Tannehill,20 and Balakrishnan.21 Gnoffo has studied flows
+over bent-biconics configurations, and the others have performed numerical simulations on the Orbiter flowfield. Bhutta and Lewis' have developed axisymmetric
+codes for air flows in chemical equilibrium or nonequilibrium.
+The results of Ref. 20 exemplify the capabilities of the PKS technique. Figure 5
+illustrates the Shuttle Orbiter geometry that was used in the numerical simulation,
+and Fig. 6 shows a comparison of the surface heating along the windward centerline.
+The flow conditions correspond to a point on the STS-3 trajectory at which the
+velocity was 6.74 km/s, the altitude was 71.3 km, and the angle of attack was 40".
+It is expected that the real-gas capabilities of the PNS codes will be greatly enhanced, a requisite for their use in the design of future slender-body vehicles like
+the TAVs.
+Kavier-Stokes Codes
+Developing and applying NS codes that include realistic high-temperature effects is
+certainly one of the most active areas in CAT and will remain so for many years to
+come. These codes are needed to provide information for future vehicle design that
+cannot be obtained by other techniques. A prime example is the simulation of the
+wake-flow region of a n aerobraking AOTV. There are two general approaches, coming from opposite directions, that are being used to develop these codes. l n the first,
+6
+
+a simple one-dimensional fluid mechanical model is used, but it incorporates stateof-the-art real-gas modeling. This allows complex phenomena to be simulated and
+compared with experiment for validating the models and the voluminous physical
+property database. Moreover, it provides benchmark results so that approximate,
+but usefully accurate, real-gas models can be developed. The approximate models
+will be computationally more efficient, thus better suited to be coupled with multidimensional flow codes. In the other approach, sophisticated multidimensional
+ideal-gas fluid codes form the base to which more established real-gas models are
+coupled.
+An example of the first approach is the work of Park who has led the development
+of real-gas models for equilibrium and nonequilibrium chemistry, thermodynamics
+(multitemperature models), and r a d i a t i ~ n . Gupta ~ Simmonds have st udjed
+~ ~ ! ~ and
+slip, multicomponent diffusion, and surface catalysis on a stagnation ~ t r e a m l i n e . ' ~
+These kinds of basic studies are very important to the future development of CAT.
+An example of results from the first approach (taken from Ref. 22) is presented in
+Fig. 7, which shows the chemical and thermodynamic structure behind the shock
+wave. The simulation corresponds to a shock-tube experiment with a freestream
+velocity of 10 km/sec and a pressure of 13 P a (0.1 Torr). The nonequilibrium
+thermodynamics is modeled by a two-temperature, dissociating, and ionizing air
+model. By coupling a nonequilibrium radiation analysis23 to this flowfield, the
+spectral emission is computed. In Fig. 8, the computed and measured spectra are
+compared in detail. The good comparison validates the analysis.
+There have many recent studies using the second approach. Balakrishnan and
+D a ~ and Green2'j have extended ideal-gas NS codes for simulating hypersonic
+y ~ ~
+flows in chemical equilibrium. Balakrishnan and Davy applied their code to a threedimensional Orbiter flow. Green has performed axisymmetric validation simulations. Gnoffo and McCandless2' and Li2* have recently developed three-dimensional
+NS solvers with models for both equilibrium and nonequilibrium air chemistry. Both
+have done simulations for complete (forebody and wake) AOTV-type configurations.
+As an illustration of the NS results, Fig. 9 (from Ref. 26) shows the molecular
+nitrogen contours for a Mach 20 flow over a hemisphere at an altitude of 20 km.
+The flow was assumed to be in thermochemical equilibrium. The upwind NS method
+used here allows the hypersonic bow shock to be captured.
+Although there is much more work to be done before multidimensional NS codes will
+include all important high-temperature effects, progress is being made in bringing
+the two approaches together.
+FUTURE CHALLENGES IN CAT
+In conclusion we will briefly comment on some of the challenges that lie ahead for
+the CAT researchers. A review of the status of CAT clearly shows that one of the
+biggest challenges is understanding how to couple nonequilibrium phenomena to
+S
+three-dimensional flowfield codes, especially the N codes. Coupling nonequilibrium chemistry to fluid codes needs more research on the optimum approach, but
+
+7
+
+most of the technical problems should be resolved in the near future. It is not clear
+that the same holds true for nonequilibrium thermodynamics and radiation. Since
+the only experience for these is the one-dimensional Row studies, not much can said
+at this time. The very complicated problem of computing radiation transport in
+the forebody and wake region of a vehicle like an AOTV is just beginning to be
+addressed. Developing numerical boundary conditions that model realistic surface
+effects like catalysis will also be a technical challenge. As the physical and chemical
+models increase in sophistication, the amount of physical property data also increases. Data for the chemical, thermodynamic, and transport(inc1uding radiative
+transport) models will be needed for high temperature gases, but such data are very
+difficult t o obtain.
+The development of hypersonic transitional and turbulence models for high
+Reynolds-number flow regimes is a probably a problem equal in magnitude to that
+of the problems associated with nonequilibrium phenomena mentioned above.
+Advancements made in CFD must be incorporated into the CAT methods. As improved ideal-gas algorithms are developed, they must be extended to real-gas methods. The development of methods and data structures that are optimized for supercomputer processing are necessary for both disciplines. Effcient grid-generation
+and solution-adaptive techniques will be necessary to optimize the use of memory
+even on future supercomputers. Rapid advancements in computer graphics technology will be indispensable to the development and application of multidimensional
+codes in CAT.
+The last challenge t o be mentioned here is code validation, in which much work remains to be done. Many experiments have not been properly analyzed because the
+codes have not modeled the necessary physics. For example, there are discrepancies between analysis and measurement in many of the previous flight experiments
+that are not completely understood. Experiments with high-enthalpy flows, such
+as arc-jet experiments, or with high Mach-number flows, such as shock-tube and
+ballistic-range experiments, provide valuable real-gas data. But the numerical simulation of these experiments can be difficult, because of the sophisticated physical
+modeling that must be included. The future(1992) AFE flight experiment mentioned previously will provide another important source for CAT code validation.
+In the near future, as the modeling capabilities of real-gas computational methods
+are improved, code validation will be a dominant area in CAT.
+
+8
+
+REFERENCES
+1 . M. E. Tauber, G. P. Menees, and H. G. Adelman, “Aerothermodynamics of
+Tramatmospheric Vehicles,” AIAA Paper 86-1257, 1986.
+2. J. T. Howe, “Introductory Aerothermodynamics of Advanced Space Transportation Systems, J . of Spacecraft and Rockets, Vol. 22, Jan.-Feb. 1985,
+pp. 19-26.
+3. ‘‘Aeroassist Flight Experiment: Preliminary Design Document,
+shall Space Flight Center, May 1986.
+
+”
+
+NASA Mar-
+
+4. P. Kutler, “A Perspective of Theoretical and Applied Computational Fluid
+Dynamics,” AIAA J., Vol. 23, Mar. 1985, pp. 328-341.
+5 . D. M. Cooper, R. L. Jaffe, and J . 0. Arnold, “Computational Chemistry and
+Aeroassisted Orbital Transfer Vehicles, ” J . of Spacecraft and Rockets, Vol. 22,
+Jan.-Feb. 1985, pp. 60-67.
+
+6 . J. D. Anderson, Jr., “A Survey of Modern Research in Hypersonic Aerodynamics,” AIAA Paper 84-1578, 1984.
+7. R. A. Graves Jr. and J. L. Hunt, “NASA’s Hypersonic Fluid and Thermal
+Physics Program (Aerothermodynamics),” AIAA Paper 85-0922, 1985.
+8. C. H. Lewis, “Current Status of Computational Aerothermodynamics,” A I A A
+Paper 86-0229, 1986.
+
+9. D. A. Anderson, J. C. Tannehill, and R. C. Pletcher, Computational Fluid
+Mechanics and Heat Transfer,Hemisphere Publishing Co., New York, 1984.
+10. J. N. Moss and G . A. Bird, “Direct Simulation of Transitional Flow for Hypersonic Re-entry Conditions, ” Progress in Astronautics and Aeronautics Thermal Design of Aeroassisted Orbital Transfer Vehicles , Vol. 96, edited by
+H. F. Yelson, New York, 1985, pp. 113-139.
+11. J. H. Lee, “Basic Governing Equations for the Flight Regimes of Aeroassisted
+Orbital Transfer Vehicles, ”Progress in Astronautics and Aeronautics - Thermal Design of Aeroassisted Orbital Transfer Vehicles , Vol. 96, edited by H. F.
+Nelson, New York, 1985, pp. 3-53.
+12. J . h’. Moss and A. L. Simmonds, “Galileo Probe Forebody Flowfield Predictions, ” Progress in Astronautics and Aeronautics - Entry Vehicle Heating and
+
+Thermal Protection Systems: Space Shuttle, Solar Starprobe, Jupiter Galileo
+Probe, Vol. 85, edited by P. E. Bauer and H. E. Collicott, Kew York, 1983,
+pp.419-445.
+13.
+
+W. E. Nicolet and A. Balakrishnan, “Radiating Shock Layer Environment
+(RASLE) User’s Manual, ” UM-79-10/AS, Aerotherm, Sunnyvale? Calif., July
+1979.
+
+14. A.Kumar, R. A. Graves Jr., K . J . Weilmuenster, and S. N. Tiwari, “Coupled
+Laminar and Turbulent Flow Solutions for Jovian Entry, ” Progress in Astronautics and Aeronautics - Aerothermodynamics and Planet.ary Entry, Vol. 77,
+edited by A. L. Crosbie, pp. 351-373.
+
+9
+
+15. M. J . Green, A. Balakrishnan and B. L. Swenson, “Aerothermodynamic Environment for a Titan Probe with Deployable Decelerator, AIAA Paper 851063, June 1985.
+16. J . V. Rakich, H. E. Bailey, and C. Park, “Computation of Nonequilibrium,
+Supersonic Three-Dimensional Inviscid Flow over Blunt-Eosed Bodies, ” AIAA
+J., Vol. 21, June 1983, pp. 834-841.
+17. J . V. Rakich, D. A. Stewart, and M. J . Lanfranco, “Results of a Flight Experiment on the Catalytic Efficiency of the Space Shuttle Heat Shield, ” AIAA
+Paper 82-0944, June 1982.
+18. H. H. Hamilton 1 , F. R. DeJarnette, and K. J. Weilmuenster, “Application of
+1
+Axisymmetric Analogue for Calculating Heating in Three-Dimensional Flows,
+” A l A A Paper 85-245, Jan. 1985.
+19. P. A. Gnoffo, “Hypersonic Flows Over Biconics Using a Variable-Effective
+Gamma, Parabolized-Navier-Stokes Code, ” AIAA Paper 83-1666, July 1983.
+
+20. D. K . Prabhu and J . C. Tannehill, “Numerical Solution of Space Shuttle Orbiter
+Flowfield Including Real-Gas Effects, ” AIAA J., Vol. 21, No. 1, Jan.-Feb.
+1985, pp.834-84 1.
+21. A. Balakrishnan, “Computation of a Viscous Real Gas Flowfield for the Space
+Shuttle Orbiter, ” AIAA Paper 84-1748, June 1984.
+22. C. Park, “Convergence of Computation of Chemical Reacting Flows, ” Progress
+in Astronautics and Aeronautics - Thermophysical Aspects of Re-entry Flows,
+Vol. 103, edited by J. N. Moss and C. D. Scott, New York, 1986, pp. 478-513.
+23. C. Park, “Nonequilibrium Air Radiation (YEQAIR) Program: User’s Manual,”
+NASA TM-86707, July 1985.
+24. R. 3 . Gupta and A. L. Simmonds, “Hypersonic Low-Density Solutions of the
+Navier-Stokes Equations with Chemical Yonequilibrium and Multicomponent
+Surface Slip, ” AIAA Paper 86-1349, June 1986.
+25. A. Balakrishnan and W. C. Davy, “Viscous Real Gas Flowfields about ThreeDimensional Configurations,” AIAA Paper 83-1511, June 1983.
+26. M. J. Green, “Numerical Simulation of Hypersonic, Axisymmetric Flowfields, ”
+,41AA Paper No. 86-1285, June 1986.
+27. P. A. Gnoffo and R. S. McCandless, “Three-Dimensional AOTV Flowfields in
+Chemical Nonequilibrium,”AIAA Paper No. 86-0230, Jan. 1986.
+28. C. P. Ei, “Implicit Methods for Computing Chemically Reacting Flow,
+TM-58274, Sept. 1986.
+
+10
+
+NASA
+
+Fig. 1 Flight Domain and Simulation Capability
+
+0 CONVECTIVE
+0 RADIATIVE
+
+z
+0
+t-
+
+o
+U
+
+E 10-1
+W
+
+10-2
+
+0
+TIME, sec
+
+Fig. 2 Titan Probe Heating Pulses (from
+Ref. 15)
+
+11
+
+.2
+
+.4
+.6
+Y/6 ( 6 = 2.24 cm)
+
+.8
+
+1.o
+
+Fig. 3 Chemical Species Profile on Stagnation Line of Titan Probe at Peak
+Heating (from Ref. 15)
+
+-
+
+I
+
+-5
+
+I
+
+5
+
+0
+
+GAS
+REACTING
+
+1
+
+J
+
+I
+
+10
+15
+20
+AXIAL DISTANCE, x, rn
+
+25
+
+30
+
+Fig. 4 Shock Shape for Shuttle Orbiter;
+V , = 6.7 km/s at altitude=65.6
+km (from Ref. 16)
+
+.20 -
+
+Fig. 5 Space Shuttle Orbiter Geometry
+(from Ref. 20)
+
+-EQUILIBRIUM AIR
+
+--- IDEAL GAS (y = 1.2)
+0
+
+cv
+E
+
+STS-3DATA
+
+2
+z
+
+.o . I 5 ee'
+
+,
+I
+
+W
+
+CATALYT
+TILES
+
+Y
+
+t
+k-+
+
+e'
+
+5
+4
+3
+
+2
+1
+
+0
+
+I
+
+.12
+I
+
+0
+
+.1
+
+.2
+
+I
+
+I
+
+-.3._.4
+XIL
+
+Fig. 6 Windward Heating
+(from Ref. 20)
+
+I
+
+I
+
+.5
+
+.6
+
+Comparison
+
+12
+
+.10
+0 .2 .4 .6
+NORMALIZED DISTANCE, x
+
+.8 1.0
+
+Fig. 7 Flowfield
+for Two-Temperature Dissociating
+and Ionizing Air (from Ref. 22)
+
+p,, = 0.1 torr
+V = 10 km/sec
+,
+NONEQUI LlBRlUM
+
+EXPERIMENT
+
+.- .
+
+.2
+
+0
+
+4
+
+.3
+
+.4
+
+.6
+.8 1.0
+WAVELENGTH, p
+
+2.0
+
+Fig. 8 Comparison of Computed and
+Measured Spectra for Nonequilibrium Air (from Ref. 22)
+
+14 .
+.
+lS2
+10 .
+.E
+
+/
+
+0.75000
+
+-
+
+.6
+
+CONTOUR LEVELS
+0.5ooOo
+O.!XOOO
+0.6ooOo
+0.607
+.-
+
+-
+
+Y
+
+. .
+4
+.2 (a)
+
+07
+
+I .
+
+Fig. 9 N Mole Fraction for Mach 20
+2
+Air Flow in Chemical Equilibrium
+(from Ref. 26)
+
+13
+
+Report Documentation Page
+2. Government Accession No.
+
+1. Report No.
+
+3. Recipient’s Catalog No.
+
+NASA TM-89450
+4. Title and Subtitle
+
+5. Report Date
+
+April 1987
+Computational Aerothermodynamics
+6. Performing Organization Code
+
+8. Performing Organization Report No.
+
+7. Author(s1
+
+A-87181
+
+George S. Deiwert and Michael J. Green
+
+10. Work Unit No.
+
+506-43-1 1
+9. Performing Organization Name and Address
+11. Contract or Grant No.
+
+Ames Research Center
+Moffett Field, CA 94035
+
+13. Type of Report and Period Covered
+
+2. Sponsoring Agency Name and Address
+
+Technical Memorandum
+
+National Aeronautics and Space Administration
+Washington, DC 20546
+
+14. Sponsoring Agency Code
+
+15. Supplementary Notes
+
+Point of Contact: Michael J. Green, Ames Research Center, M/S 230-2
+Moffett Field, CA 94035 (415) 694-4226 or FTS 464-4226
+
+16. Abstract
+
+Computational aerothermodynamics (CAT) has in the past contributed to the
+understanding of real-gas flows encountered by hypervelocity reentry vehicles.
+With advances in computational fluid dynamics, in the modeling of hightemperature phenomena, and in computer capability, CAT is an enabling technology
+for the design of many future space vehicles. An overview of the current capabilities of CAT is provided by describing available methods and their applications. Technical challenges that need to be met are also discussed.
+
+17. Key Words (Suggested by Authotls))
+
+18. Distribution Statement
+
+Aerothermodynamics
+
+Unclassified-Unlimited
+Subject Category - 034
+
+19. Security Classif. (of this report)
+
+Unclassified
+NASA FORM 1626 OCT 86
+
+I
+
+20. Security Classif. (of this page)
+
+Unclassified
+
+I 21. No. of pages
+
+I
+
+1
+5
+
+I
+
+22. Price
+
+A02
+
